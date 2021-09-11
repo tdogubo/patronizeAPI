@@ -9,10 +9,9 @@ class User {
     this.lastName = lastName;
   }
 
-  async createUser() {
-    try {
-      let id = uuid.v4();
-      let sql = `INSERT INTO users(
+  createUser() {
+    let id = uuid.v4();
+    let sql = `INSERT INTO users(
                 user_id, email, password, first_name, last_name
                 )
                 VALUES(
@@ -22,11 +21,12 @@ class User {
                     '${this.firstName}',
                     '${this.lastName}'
                 )`;
-      const [newUser, _] = await db.execute(sql);
-      return newUser;
-    } catch (err) {
-      return console.log(err);
-    }
+
+    return db.execute(sql);
+  }
+  static findByEmail(email) {
+    let sql = `SELECT * FROM users WHERE email= '${email}'`;
+    return db.execute(sql);
   }
 }
 
