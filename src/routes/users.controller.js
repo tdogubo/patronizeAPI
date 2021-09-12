@@ -1,5 +1,6 @@
 const User = require("../models/users.model");
 const bcrypt = require("bcrypt-node");
+const jwt = require("jsonwebtoken");
 
 async function getUser(req, res) {
   try {
@@ -7,8 +8,12 @@ async function getUser(req, res) {
     let [[user], _] = await User.findByEmail(email);
     let hash = user.password;
     let isValid = bcrypt.compareSync(password, hash);
-    if (isValid)
-      return res.status(200).json({ message: `Welcome ${user.first_name}` });
+    let validUser = { user: email };
+    if (isValid) {
+      const accessToken = jwt.sign(validUser, process.env.ACCESS_TOKEN);
+      //return res.status(200).json({ message: `Welcome ${user.first_name}` });
+      res.json({ accessToken: accessToken });
+    }
     return res.sendStatus(400);
   } catch (err) {
     console.log(err);
