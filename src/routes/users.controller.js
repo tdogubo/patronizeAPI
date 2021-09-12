@@ -6,8 +6,10 @@ async function getUser(req, res) {
     let { email, password } = req.body;
     let [[user], _] = await User.findByEmail(email);
     let hash = user.password;
-    // return console.log(user);
-    return res.status(200).json({ message: hash });
+    let isValid = bcrypt.compareSync(password, hash);
+    if (isValid)
+      return res.status(200).json({ message: `Welcome ${user.first_name}` });
+    return res.sendStatus(400);
   } catch (err) {
     console.log(err);
   }
