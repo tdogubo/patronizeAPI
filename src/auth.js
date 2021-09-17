@@ -13,6 +13,7 @@ function authToken(req, res, next) {
     });
   } else next();
 }
+
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: "15s" });
 }

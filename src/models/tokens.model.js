@@ -1,16 +1,22 @@
 const db = require("../../config/db");
 
 class Tokens {
-  constructor(id, token) {
-    this.token = token;
+  constructor(userToken, user_id) {
+    this.userToken = userToken;
+    this.user_id = user_id;
   }
-  static addToken(id) {
+  addToken() {
     let sql = `INSERT INTO tokens(
-            user_id,
-            token)
+            users_user_id,
+            user_token)
             VALUES (
-                '${id}',
-                '${this.token}')`;
+                '${this.user_id}',
+                '${this.userToken}')`;
+    return db.execute(sql);
+  }
+  static getToken(user_id) { 
+    let sql = `SELECT * FROM tokens 
+    WHERE users_user_id = '${user_id}'`;
     return db.execute(sql);
   }
 }

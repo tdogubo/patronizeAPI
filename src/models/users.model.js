@@ -12,7 +12,7 @@ class User {
   createUser() {
     let id = uuid.v4();
     let sql = `INSERT INTO users(
-                user_id, email, password, first_name, last_name
+                user_id, email, password, firstName, lastName
                 )
                 VALUES(
                     '${id}',
