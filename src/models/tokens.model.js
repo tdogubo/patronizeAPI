@@ -14,9 +14,21 @@ class Tokens {
                 '${this.userToken}')`;
     return db.execute(sql);
   }
+
   static getToken(user_id) { 
     let sql = `SELECT * FROM tokens 
     WHERE users_user_id = '${user_id}'`;
+    return db.execute(sql);
+  }
+  static confirmToken(token) {
+    let sql = `SELECT * FROM tokens 
+    WHERE user_token = '${token}'`;
+    return db.execute(sql);
+  }
+
+  static deleteToken(token) {
+    let sql = `DELETE FROM tokens 
+    WHERE user_token = '${token}'`;
     return db.execute(sql);
   }
 }

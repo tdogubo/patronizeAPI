@@ -5,8 +5,9 @@ const bcrypt = require("bcrypt-node");
 const jwt = require("jsonwebtoken");
 
 const { generateAccessToken } = require(".././auth");
+const { deleteToken } = require("../models/tokens.model");
 
-async function loginUser(req, res, next) {
+async function loginUser(req, res) {
   try {
     let { email, password } = req.body;
     let [[user], _] = await User.findByEmail(email); //gets the user by email
@@ -61,24 +62,33 @@ async function registerUser(req, res) {
 }
 
 async function tokenRefresh(req, res) {
-  const refreshToken = req.body.token;
+  const refreshToken = req.body.refreshToken;
   try {
-    if (refreshToken === null) return res.sendStatus(401);
-    let [[token], _] = await Tokens.getToken(refreshToken);
-    console.log(token);
+    if (!refreshToken) return res.sendStatus(401);
+    let [[token], _] = await Tokens.confirmToken(refreshToken);
     let user_id = token.users_user_id;
-    // if (!token) return res.sendStatus(403);
+    if (!token) return res.sendStatus(403);
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
-      // if (err) return res.sendStatus(403);
+      if (err) return res.sendStatus(403);
       const accessToken = generateAccessToken({ name: user_id });
-      return res.json({ accessToken: accessToken });
+      return res.json({ accessToken });
     });
   } catch (err) {
     console.log(err);
   }
 }
 
-async function tokenDelete(req, res, next) {}
+async function tokenDelete(req, res) {
+  const refreshToken = req.body.refreshToken;
+  try {
+    if (!refreshToken) return res.sendStatus(401);
+    let [token] = await Tokens.deleteToken(refreshToken);
+    console.log(token)
+    return res.sendStatus(204);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 module.exports = {
   loginUser,

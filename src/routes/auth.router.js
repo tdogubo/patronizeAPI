@@ -5,7 +5,7 @@ const authRouter = express.Router();
 
 authRouter.post("/auth/login", loginUser);
 authRouter.post("/auth/register", registerUser);
-authRouter.post("/token/:id", tokenRefresh);
+authRouter.post("/token", tokenRefresh);
 
 authRouter.delete("/auth/logout", tokenDelete);
 
